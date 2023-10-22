@@ -1,9 +1,19 @@
+<<<<<<< HEAD
 # Gradle files
 .gradle/
 build/
 
 # Local configuration file (sdk path, etc)
 local.properties
+/local.properties
+/.idea
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
 
 # Log/OS Files
 *.log
@@ -14,6 +24,8 @@ captures/
 .cxx/
 *.apk
 output.json
+/build
+/captures
 
 # IntelliJ
 *.iml
