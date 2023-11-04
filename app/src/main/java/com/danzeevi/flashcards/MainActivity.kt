@@ -3,7 +3,6 @@ package com.danzeevi.flashcards
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -67,6 +66,7 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+        handleIntent(intent)
         setObservers()
     }
 
@@ -76,6 +76,15 @@ class MainActivity : ComponentActivity() {
         }
         mainViewModel.dialogState.observe(this) {
             showAddLiteralDialog.value = it
+        }
+    }
+
+    private fun handleIntent(intent: Intent) {
+        if (intent.action == Intent.ACTION_PROCESS_TEXT) {
+            val text = intent.getStringExtra(Intent.EXTRA_PROCESS_TEXT)
+            text?.let {
+                mainViewModel.showDialogAddLiteral(it)
+            }
         }
     }
 }
