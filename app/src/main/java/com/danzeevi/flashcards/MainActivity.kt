@@ -26,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -46,8 +47,6 @@ import com.danzeevi.flashcards.ui.theme.FlashcardsTheme
 class MainActivity : ComponentActivity() {
 
     private val mainViewModel by viewModels<MainViewModel>()
-    private var literals = mutableStateOf<List<Literal>>(listOf())
-    private var showAddLiteralDialog = mutableStateOf(ShowDialogWithValue(false))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,27 +55,12 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier.background(color = MaterialTheme.colorScheme.background)
                 ) {
-                    MainContent(
-                        literals.value, showAddLiteralDialog.value,
-                        onClickAddLiteral = mainViewModel::showDialogAddLiteral,
-                        addLiteral = mainViewModel::addLiteral,
-                        closeDialogAddLiteral = mainViewModel::closeDialogAddLiteral
-                    )
+                    MainContent(mainViewModel)
                 }
             }
         }
 
         handleIntent(intent)
-        setObservers()
-    }
-
-    private fun setObservers() {
-        mainViewModel.literals.observe(this) {
-            literals.value = it
-        }
-        mainViewModel.dialogState.observe(this) {
-            showAddLiteralDialog.value = it
-        }
     }
 
     private fun handleIntent(intent: Intent) {
@@ -91,11 +75,11 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainContent(
-    literals: List<Literal>, showDialogWithValue: ShowDialogWithValue,
-    onClickAddLiteral: () -> Unit,
-    addLiteral: (value: String, definition: String) -> Unit,
-    closeDialogAddLiteral: () -> Unit
+    viewModel: MainViewModel
 ) {
+    val literals by viewModel.literals.observeAsState(listOf())
+    val showDialogWithValue by viewModel.dialogState.observeAsState(ShowDialogWithValue(false))
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -104,17 +88,13 @@ fun MainContent(
         }
         AddLiteralButton(
             Modifier.align(Alignment.BottomEnd),
-            onClick = onClickAddLiteral
+            onClick = viewModel::showDialogAddLiteral
         )
         if (showDialogWithValue.shouldShow) {
             AddLiteralDialog(
                 showDialogWithValue.literal,
-                onAdd = { value, definition ->
-                    addLiteral(value, definition)
-                },
-                onDismiss = {
-                    closeDialogAddLiteral()
-                }
+                onAdd = viewModel::addLiteral,
+                onDismiss = viewModel::closeDialogAddLiteral
             )
         }
     }

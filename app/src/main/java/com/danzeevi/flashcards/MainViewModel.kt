@@ -8,12 +8,10 @@ data class ShowDialogWithValue(val shouldShow: Boolean, val literal: String = ""
 
 class MainViewModel : ViewModel() {
     private val _dialogState = MutableLiveData(ShowDialogWithValue(false))
-    val dialogState: LiveData<ShowDialogWithValue>
-        get() = _dialogState
+    val dialogState: LiveData<ShowDialogWithValue> = _dialogState
 
     private val _literals = MutableLiveData<List<Literal>>(vocabularySample)
-    val literals: LiveData<List<Literal>>
-        get() = _literals
+    val literals: LiveData<List<Literal>> = _literals
 
     fun showDialogAddLiteral(value: String = "") {
         _dialogState.value = ShowDialogWithValue(true, value)
