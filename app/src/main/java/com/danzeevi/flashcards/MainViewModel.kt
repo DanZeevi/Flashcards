@@ -3,8 +3,11 @@ package com.danzeevi.flashcards
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.danzeevi.flashcards.data.Literal
 import com.danzeevi.flashcards.data.LiteralRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 data class ShowDialogWithValue(val shouldShow: Boolean, val literal: String = "")
 
@@ -25,5 +28,11 @@ class MainViewModel(private val literalRepo: LiteralRepository) : ViewModel() {
     fun addLiteral(value: String, definition: String) {
         val literal = Literal(value = value, definition = definition)
         literalRepo.insert(literal)
+    }
+
+    fun deleteLiteral(literal: Literal) {
+        viewModelScope.launch(Dispatchers.IO) {
+            literalRepo.delete(literal)
+        }
     }
 }

@@ -83,7 +83,7 @@ fun MainContent(viewModel: MainViewModel) {
         modifier = Modifier.fillMaxSize()
     ) {
         Column(Modifier.align(Alignment.TopCenter)) {
-            LiteralList(literals = literals)
+            LiteralList(literals = literals) { viewModel.deleteLiteral(it) }
         }
         AddLiteralButton(
             Modifier.align(Alignment.BottomEnd),
@@ -152,12 +152,12 @@ fun AddLiteralButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
 }
 
 @Composable
-fun LiteralList(literals: List<Literal>) {
+fun LiteralList(literals: List<Literal>, deleteLiteral: (Literal) -> Unit) {
     LazyColumn(
         Modifier.background(Color.Transparent)
     ) {
         items(literals) { literal ->
-            Flashcard(literal)
+            Flashcard(literal, deleteLiteral)
         }
     }
 }
@@ -168,7 +168,7 @@ fun LiteralList(literals: List<Literal>) {
 fun PreviewList() {
     FlashcardsTheme {
         Surface {
-            LiteralList(vocabularySample)
+            LiteralList(vocabularySample) {}
         }
     }
 }

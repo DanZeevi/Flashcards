@@ -18,8 +18,10 @@ import com.danzeevi.flashcards.data.Literal
 import com.danzeevi.flashcards.ui.flashcard.cardface.CardFace
 
 @Composable
-fun Flashcard(literal: Literal) {
+fun Flashcard(literal: Literal, deleteLiteral: (Literal) -> Unit) {
     var isFlipped by remember { mutableStateOf(false) }
+
+    val onDelete = { deleteLiteral(literal) }
 
     val rotation =
         animateFloatAsState(
@@ -39,9 +41,9 @@ fun Flashcard(literal: Literal) {
             isFlipped = !isFlipped
         }) {
         if (rotation.value < 90f) {
-            CardFace(literal.value, rotation.value)
+            CardFace(literal.value, rotation.value, onDelete)
         } else {
-            CardFace(literal.definition, rotation.value, false)
+            CardFace(literal.definition, rotation.value, onDelete, false)
         }
     }
 }
