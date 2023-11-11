@@ -65,6 +65,8 @@ dependencies {
     // Room DB
     implementation("androidx.room:room-runtime:$roomVersion")
     ksp("androidx.room:room-compiler:$roomVersion")
+    // Koin DI
+    implementation("io.insert-koin:koin-androidx-compose:3.5.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
