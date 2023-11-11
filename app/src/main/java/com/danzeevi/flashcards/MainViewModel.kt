@@ -3,15 +3,16 @@ package com.danzeevi.flashcards
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.danzeevi.flashcards.data.Literal
+import com.danzeevi.flashcards.data.LiteralRepository
 
 data class ShowDialogWithValue(val shouldShow: Boolean, val literal: String = "")
 
-class MainViewModel : ViewModel() {
+class MainViewModel(private val literalRepo: LiteralRepository) : ViewModel() {
     private val _dialogState = MutableLiveData(ShowDialogWithValue(false))
     val dialogState: LiveData<ShowDialogWithValue> = _dialogState
 
-    private val _literals = MutableLiveData<List<Literal>>(vocabularySample)
-    val literals: LiveData<List<Literal>> = _literals
+    val literals: LiveData<List<Literal>> = literalRepo.getAll()
 
     fun showDialogAddLiteral(value: String = "") {
         _dialogState.value = ShowDialogWithValue(true, value)
@@ -22,10 +23,7 @@ class MainViewModel : ViewModel() {
     }
 
     fun addLiteral(value: String, definition: String) {
-        val oldLiterals = _literals.value
-        val newLiterals = oldLiterals?.let {
-            it + Literal(value, definition)
-        } ?: listOf(Literal(value, definition))
-        _literals.value = newLiterals
+        val literal = Literal(value = value, definition = definition)
+        literalRepo.insert(literal)
     }
 }

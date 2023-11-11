@@ -14,7 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.danzeevi.flashcards.Literal
+import com.danzeevi.flashcards.data.Literal
 import com.danzeevi.flashcards.ui.flashcard.cardface.CardFace
 
 @Composable

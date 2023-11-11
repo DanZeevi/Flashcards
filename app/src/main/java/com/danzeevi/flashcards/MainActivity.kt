@@ -40,6 +40,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.danzeevi.flashcards.data.Literal
 import com.danzeevi.flashcards.ui.flashcard.Flashcard
 import com.danzeevi.flashcards.ui.theme.FlashcardsTheme
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -149,8 +150,6 @@ fun AddLiteralButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
         Icon(Icons.Filled.Add, "Add literal button")
     }
 }
-
-data class Literal(val value: String, val definition: String)
 
 @Composable
 fun LiteralList(literals: List<Literal>) {
