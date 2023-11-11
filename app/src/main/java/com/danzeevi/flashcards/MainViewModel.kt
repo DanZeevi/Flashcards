@@ -27,7 +27,9 @@ class MainViewModel(private val literalRepo: LiteralRepository) : ViewModel() {
 
     fun addLiteral(value: String, definition: String) {
         val literal = Literal(value = value, definition = definition)
-        literalRepo.insert(literal)
+        viewModelScope.launch(Dispatchers.IO) {
+            literalRepo.insert(literal)
+        }
     }
 
     fun deleteLiteral(literal: Literal) {
