@@ -3,6 +3,7 @@ package com.danzeevi.flashcards
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -24,6 +25,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -83,18 +85,30 @@ fun MainContent(viewModel: MainViewModel) {
         modifier = Modifier.fillMaxSize()
     ) {
         Column(Modifier.align(Alignment.TopCenter)) {
-            LiteralList(literals = literals) { viewModel.deleteLiteral(it) }
+            LiteralList(
+                literals = literals,
+                deleteLiteral = viewModel::deleteLiteral,
+                startEdit = viewModel::showDialogUpdateLiteral
+            )
         }
         AddLiteralButton(
             Modifier.align(Alignment.BottomEnd),
             onClick = viewModel::showDialogAddLiteral
         )
-        if (showDialogWithValue.shouldShow) {
-            AddLiteralDialog(
-                showDialogWithValue.literal,
-                onAdd = viewModel::addLiteral,
-                onDismiss = viewModel::closeDialogAddLiteral
-            )
+        with(showDialogWithValue) {
+            if (shouldShow) {
+                AddLiteralDialog(
+                    literal,
+                    onFinish = {
+                        if (isEdit) {
+                            viewModel.updateLiteral(it)
+                        } else {
+                            viewModel.addLiteral(it)
+                        }
+                    },
+                    onDismiss = viewModel::closeDialogAddLiteral
+                )
+            }
         }
     }
 }
@@ -102,15 +116,15 @@ fun MainContent(viewModel: MainViewModel) {
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun AddLiteralDialog(
-    initialValue: String = "",
+    literal: Literal?,
     onDismiss: () -> Unit,
-    onAdd: (value: String, definition: String) -> Unit
+    onFinish: (Literal) -> Unit
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
 
-    var value by rememberSaveable { mutableStateOf(initialValue) }
-    var definition by rememberSaveable { mutableStateOf("") }
+    var value by rememberSaveable { mutableStateOf(literal?.value ?: "") }
+    var definition by rememberSaveable { mutableStateOf(literal?.definition ?: "") }
 
     Dialog(onDismissRequest = onDismiss) {
         Column {
@@ -132,7 +146,11 @@ fun AddLiteralDialog(
                     onDone = {
                         focusManager.clearFocus()
                         keyboardController?.hide()
-                        onAdd(value, definition)
+                        onFinish(literal?.also {
+                            it.value = value
+                            it.definition = definition
+                        } ?: Literal(value, definition)
+                        )
                         onDismiss()
                     }
                 )
@@ -152,12 +170,16 @@ fun AddLiteralButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
 }
 
 @Composable
-fun LiteralList(literals: List<Literal>, deleteLiteral: (Literal) -> Unit) {
+fun LiteralList(
+    literals: List<Literal>,
+    deleteLiteral: (Literal) -> Unit,
+    startEdit: (Literal) -> Unit
+) {
     LazyColumn(
         Modifier.background(Color.Transparent)
     ) {
         items(literals) { literal ->
-            Flashcard(literal, deleteLiteral)
+            Flashcard(literal, deleteLiteral) { startEdit(literal) }
         }
     }
 }
@@ -168,7 +190,7 @@ fun LiteralList(literals: List<Literal>, deleteLiteral: (Literal) -> Unit) {
 fun PreviewList() {
     FlashcardsTheme {
         Surface {
-            LiteralList(vocabularySample) {}
+            LiteralList(vocabularySample, {}) {}
         }
     }
 }

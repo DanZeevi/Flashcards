@@ -1,13 +1,16 @@
 package com.danzeevi.flashcards.ui.flashcard
 
+import android.util.Log
 import androidx.compose.animation.core.EaseInOutQuad
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -17,8 +20,9 @@ import androidx.compose.ui.graphics.Color
 import com.danzeevi.flashcards.data.Literal
 import com.danzeevi.flashcards.ui.flashcard.cardface.CardFace
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Flashcard(literal: Literal, deleteLiteral: (Literal) -> Unit) {
+fun Flashcard(literal: Literal, deleteLiteral: (Literal) -> Unit, startEdit: () -> Unit) {
     var isFlipped by remember { mutableStateOf(false) }
 
     val onDelete = { deleteLiteral(literal) }
@@ -33,13 +37,11 @@ fun Flashcard(literal: Literal, deleteLiteral: (Literal) -> Unit) {
     val interactionSource = remember { MutableInteractionSource() }
     Box(modifier = Modifier
         .background(Color.Transparent)
-        .clickable(
-            interactionSource,
-            indication = null
+        .combinedClickable(
+            onClick = { isFlipped = !isFlipped },
+            onLongClick = startEdit
         )
-        {
-            isFlipped = !isFlipped
-        }) {
+    ) {
         if (rotation.value < 90f) {
             CardFace(literal.value, rotation.value, onDelete)
         } else {

@@ -1,5 +1,6 @@
 package com.danzeevi.flashcards
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,7 +10,11 @@ import com.danzeevi.flashcards.data.LiteralRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-data class ShowDialogWithValue(val shouldShow: Boolean, val literal: String = "")
+data class ShowDialogWithValue(
+    val shouldShow: Boolean,
+    val literal: Literal? = null,
+    val isEdit: Boolean = false,
+)
 
 class MainViewModel(private val literalRepo: LiteralRepository) : ViewModel() {
     private val _dialogState = MutableLiveData(ShowDialogWithValue(false))
@@ -18,17 +23,26 @@ class MainViewModel(private val literalRepo: LiteralRepository) : ViewModel() {
     val literals: LiveData<List<Literal>> = literalRepo.getAll()
 
     fun showDialogAddLiteral(value: String = "") {
-        _dialogState.value = ShowDialogWithValue(true, value)
+        _dialogState.value = ShowDialogWithValue(true, Literal(value, ""))
+    }
+
+    fun showDialogUpdateLiteral(literal: Literal) {
+        _dialogState.value = ShowDialogWithValue(true, literal, true)
     }
 
     fun closeDialogAddLiteral() {
         _dialogState.value = ShowDialogWithValue(false)
     }
 
-    fun addLiteral(value: String, definition: String) {
-        val literal = Literal(value = value, definition = definition)
+    fun addLiteral(literal: Literal) {
         viewModelScope.launch(Dispatchers.IO) {
             literalRepo.insert(literal)
+        }
+    }
+
+    fun updateLiteral(literal: Literal) {
+        viewModelScope.launch(Dispatchers.IO) {
+            literalRepo.update(literal)
         }
     }
 
