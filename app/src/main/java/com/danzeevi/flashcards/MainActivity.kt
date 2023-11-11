@@ -121,12 +121,12 @@ fun AddLiteralDialog(
     onFinish: (Literal) -> Unit
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
-    val focusManager = LocalFocusManager.current
 
     var value by rememberSaveable { mutableStateOf(literal?.value ?: "") }
     var definition by rememberSaveable { mutableStateOf(literal?.definition ?: "") }
 
     Dialog(onDismissRequest = onDismiss) {
+        val focusManager = LocalFocusManager.current
         Column {
             TextField(
                 value = value,
