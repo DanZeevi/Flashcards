@@ -5,8 +5,8 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class Literal(
+    val value: String,
+    val definition: String,
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val value: String,
-    val definition: String
 )

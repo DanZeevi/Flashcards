@@ -1,5 +1,7 @@
 package com.danzeevi.flashcards
 
+import com.danzeevi.flashcards.data.Literal
+
 val vocabularySample = listOf(
     Literal(
         "angry",
