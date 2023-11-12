@@ -62,8 +62,9 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-
-        handleIntent(intent)
+        if (savedInstanceState === null) {
+            handleIntent(intent)
+        }
     }
 
     private fun handleIntent(intent: Intent) {
