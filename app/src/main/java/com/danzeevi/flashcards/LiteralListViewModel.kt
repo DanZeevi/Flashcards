@@ -1,6 +1,5 @@
 package com.danzeevi.flashcards
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,7 +15,7 @@ data class ShowDialogWithValue(
     val isEdit: Boolean = false,
 )
 
-class MainViewModel(private val literalRepo: LiteralRepository) : ViewModel() {
+class LiteralListViewModel(private val literalRepo: LiteralRepository) : ViewModel() {
     private val _dialogState = MutableLiveData(ShowDialogWithValue(false))
     val dialogState: LiveData<ShowDialogWithValue> = _dialogState
 

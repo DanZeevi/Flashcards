@@ -1,7 +1,7 @@
 package com.danzeevi.flashcards.di
 
 import androidx.room.Room
-import com.danzeevi.flashcards.MainViewModel
+import com.danzeevi.flashcards.LiteralListViewModel
 import com.danzeevi.flashcards.data.LiteralDAO
 import com.danzeevi.flashcards.data.LiteralDB
 import com.danzeevi.flashcards.data.LiteralRepository
@@ -23,5 +23,5 @@ val appModule = module {
     }
     single<LiteralRepository> { LiteralRepositoryImpl(get()) }
     // ViewModels
-    viewModel { MainViewModel(get()) }
+    viewModel { LiteralListViewModel(get()) }
 }
