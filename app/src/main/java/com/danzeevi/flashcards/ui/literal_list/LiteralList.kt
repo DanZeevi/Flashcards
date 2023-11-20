@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -36,9 +37,10 @@ import com.danzeevi.flashcards.LiteralListViewModel
 import com.danzeevi.flashcards.ShowDialogWithValue
 import com.danzeevi.flashcards.data.Literal
 import com.danzeevi.flashcards.ui.flashcard.Flashcard
+import org.koin.androidx.compose.getViewModel
 
 @Composable
-fun LiteralListContainer(viewModel: LiteralListViewModel) {
+fun LiteralListContainer(viewModel: LiteralListViewModel = getViewModel()) {
     val literals by viewModel.literals.observeAsState(listOf())
     val showDialogWithValue by viewModel.dialogState.observeAsState(ShowDialogWithValue(false))
 
