@@ -16,7 +16,9 @@ const val LITERAL_DB = "LiteralDB"
 val appModule = module {
     // Literal DB
     single<LiteralDB> {
-        Room.databaseBuilder(androidApplication(), LiteralDB::class.java, LITERAL_DB).build()
+        Room.databaseBuilder(androidApplication(), LiteralDB::class.java, LITERAL_DB)
+            .fallbackToDestructiveMigration()
+            .build()
     }
     single<LiteralDAO> {
         val literalDB = get<LiteralDB>()

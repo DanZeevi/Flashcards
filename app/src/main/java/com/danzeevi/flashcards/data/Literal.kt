@@ -7,6 +7,8 @@ import androidx.room.PrimaryKey
 data class Literal(
     var value: String,
     var definition: String,
+    var nextViewDate: Long = 0,
+    var interval: Int = 1,
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
 )
