@@ -7,6 +7,7 @@ import com.danzeevi.flashcards.data.LiteralDB
 import com.danzeevi.flashcards.data.LiteralRepository
 import com.danzeevi.flashcards.data.LiteralRepositoryImpl
 import com.danzeevi.flashcards.ui.MainViewModel
+import com.danzeevi.flashcards.ui.test.TestViewModel
 import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -28,4 +29,5 @@ val appModule = module {
     // ViewModels
     viewModel { MainViewModel() }
     viewModel { LiteralListViewModel(get()) }
+    viewModel { TestViewModel(get()) }
 }

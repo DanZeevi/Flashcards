@@ -25,6 +25,7 @@ import com.danzeevi.flashcards.ui.Screen.Test
 import com.danzeevi.flashcards.ui.bottom_navbar.BottomNavBar
 import com.danzeevi.flashcards.ui.literal_list.LiteralList
 import com.danzeevi.flashcards.ui.literal_list.LiteralListScreen
+import com.danzeevi.flashcards.ui.test.TestScreen
 import com.danzeevi.flashcards.ui.theme.FlashcardsTheme
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -59,7 +60,6 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun MainContent(viewModel: MainViewModel) {
         val screen by viewModel.currentScreen.observeAsState(List)
-
         Column(
             Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween,
@@ -71,7 +71,7 @@ class MainActivity : ComponentActivity() {
                     .weight(1f), verticalAlignment = Alignment.Top) {
                 when (screen) {
                     List -> LiteralListScreen()
-                    Test -> TODO("Not yet implemented") // TestScreen()
+                    Test -> TestScreen()
                 }
             }
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.Bottom) {
