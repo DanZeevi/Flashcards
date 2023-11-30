@@ -1,9 +1,10 @@
 package com.danzeevi.flashcards.data
 
 import androidx.lifecycle.LiveData
+import kotlinx.coroutines.flow.Flow
 
 class LiteralRepositoryImpl(private val literalDAO: LiteralDAO): LiteralRepository {
-    override fun getAll(): LiveData<List<Literal>> = literalDAO.getAll()
+    override fun getAll(): Flow<List<Literal>> = literalDAO.getAll()
 
     override fun insert(literal: Literal) {
         literalDAO.insert(literal)

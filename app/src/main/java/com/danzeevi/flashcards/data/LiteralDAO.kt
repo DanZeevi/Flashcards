@@ -7,6 +7,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface LiteralDAO {
@@ -14,7 +15,7 @@ interface LiteralDAO {
     fun insert(literal: Literal)
 
     @Query("SELECT * FROM Literal")
-    fun getAll(): LiveData<List<Literal>>
+    fun getAll(): Flow<List<Literal>>
 
     @Update
     fun update(literal: Literal)

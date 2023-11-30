@@ -1,17 +1,36 @@
 package com.danzeevi.flashcards.ui.test
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.danzeevi.flashcards.data.Literal
 import com.danzeevi.flashcards.data.LiteralRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.days
 
 class TestViewModel(private val repo: LiteralRepository) : ViewModel() {
-    val liveLiterals = repo.getAll()
+    private val _literals = MutableStateFlow<List<Literal?>>(emptyList())
 
-    private var literals: MutableList<Literal> =
-        repo.getAll().value?.toMutableList() ?: mutableListOf() // TODO: filter and order literals by view date
-    val currentLiteral = MutableLiveData<Literal?>(literals.removeFirstOrNull())
+    private val _currentLiteral = MutableStateFlow<Literal?>(null)
+    val currentLiteral = _currentLiteral.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            repo.getAll().collect {
+                _literals.value = it
+                _currentLiteral.value = it.firstOrNull()
+            }
+        }
+    }
+
+    private fun fetchLiteral() {
+        val newList = _literals.value.drop(1)
+        val item = newList.firstOrNull() ?: return
+        _currentLiteral.value = item
+        _literals.value = newList
+    }
 
     fun markLiteralKnown() {
         currentLiteral.value?.let { literal ->
@@ -23,7 +42,7 @@ class TestViewModel(private val repo: LiteralRepository) : ViewModel() {
             literal.nextViewDate = calculateNextViewTime(updatedInterval)
             repo::update
         }
-        getNext()
+        fetchLiteral()
     }
 
     fun markLiteralUnknown() {
@@ -32,14 +51,7 @@ class TestViewModel(private val repo: LiteralRepository) : ViewModel() {
             literal.nextViewDate = calculateNextViewTime(1)
             repo::update
         }
-        getNext()
-    }
-
-    private fun getNext() {
-        if (literals.isEmpty() && liveLiterals.value?.isNotEmpty() == true) {
-            literals = liveLiterals.value?.toMutableList() ?: mutableListOf()
-        }
-        currentLiteral.value = literals.removeFirstOrNull()
+        fetchLiteral()
     }
 
     private fun calculateNextViewTime(interval: Int): Long =

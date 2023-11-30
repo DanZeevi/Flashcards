@@ -13,6 +13,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -26,16 +27,9 @@ import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun TestScreen(viewModel: TestViewModel = getViewModel()) {
-    val list by viewModel.liveLiterals.observeAsState(listOf())
-    val literal by viewModel.currentLiteral.observeAsState()
+    val literal by viewModel.currentLiteral.collectAsState()
     literal?.let {
         TestCard(it, viewModel::markLiteralKnown, viewModel::markLiteralUnknown)
-    }
-
-    viewModel.liveLiterals.observe(LocalLifecycleOwner.current) {
-        if (list.isNotEmpty() && literal == null) {
-            viewModel.markLiteralUnknown()
-        }
     }
 }
 
