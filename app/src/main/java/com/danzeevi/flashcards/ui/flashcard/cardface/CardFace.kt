@@ -1,6 +1,5 @@
 package com.danzeevi.flashcards.ui.flashcard.cardface
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.danzeevi.flashcards.ui.theme.FlashcardsTheme
 
 @Composable
-fun CardFace(text: String, angle: Float, onDelete: () -> Unit, isFront: Boolean = true) {
+fun CardFace(text: String, angle: Float, onDelete: (() -> Unit)? = null, isFront: Boolean = true) {
     Surface(
         shape = MaterialTheme.shapes.large,
         shadowElevation = 1.dp,
@@ -51,11 +50,13 @@ fun CardFace(text: String, angle: Float, onDelete: () -> Unit, isFront: Boolean 
                     style = MaterialTheme.typography.titleLarge,
                 )
             }
-            IconButton(
-                modifier = Modifier.align(Alignment.TopEnd).padding(8.dp),
-                onClick = onDelete,
-            ) {
-                Icon(Icons.Filled.Delete, "Delete literal button", tint = Color.Red)
+            onDelete?.let {
+                IconButton(
+                    modifier = Modifier.align(Alignment.TopEnd).padding(8.dp),
+                    onClick = it,
+                ) {
+                    Icon(Icons.Filled.Delete, "Delete literal button", tint = Color.Red)
+                }
             }
         }
     }
@@ -66,7 +67,7 @@ fun CardFace(text: String, angle: Float, onDelete: () -> Unit, isFront: Boolean 
 fun Preview() {
     FlashcardsTheme {
         Surface {
-            CardFace("Text", 0f, {})
+            CardFace("Text", 0f)
         }
     }
 }

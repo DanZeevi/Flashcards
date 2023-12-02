@@ -37,7 +37,7 @@ fun TestCard(literal: Literal, markLiteral: (known: Boolean) -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
-        Flashcard(literal, deleteLiteral = { /**/ }, {})
+        Flashcard(literal, deleteLiteral = null) {}
         Row(Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly) {
             IconButton(onClick = { markLiteral(false) }) {
@@ -54,7 +54,5 @@ fun TestCard(literal: Literal, markLiteral: (known: Boolean) -> Unit) {
 @Composable
 fun Preview() {
     TestCard(
-        Literal("value", "definition", 0, 1, 0),
-        {}
-    )
+        Literal("value", "definition", 0, 1, 0)) {}
 }
