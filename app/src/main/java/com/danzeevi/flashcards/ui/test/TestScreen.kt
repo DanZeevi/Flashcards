@@ -1,6 +1,5 @@
 package com.danzeevi.flashcards.ui.test
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,11 +14,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
 import com.danzeevi.flashcards.data.Literal
 import com.danzeevi.flashcards.ui.flashcard.Flashcard
@@ -29,12 +26,12 @@ import org.koin.androidx.compose.getViewModel
 fun TestScreen(viewModel: TestViewModel = getViewModel()) {
     val literal by viewModel.currentLiteral.collectAsState()
     literal?.let {
-        TestCard(it, viewModel::markLiteralKnown, viewModel::markLiteralUnknown)
+        TestCard(it, viewModel::markCurrentLiteralAndFetchNext)
     }
 }
 
 @Composable
-fun TestCard(literal: Literal, onLiteralKnown: () -> Unit, onLiteralUnknown: () -> Unit) {
+fun TestCard(literal: Literal, markLiteral: (known: Boolean) -> Unit) {
     Column(
         Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -43,10 +40,10 @@ fun TestCard(literal: Literal, onLiteralKnown: () -> Unit, onLiteralUnknown: () 
         Flashcard(literal, deleteLiteral = { /**/ }, {})
         Row(Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly) {
-            IconButton(onClick = { onLiteralUnknown() }) {
+            IconButton(onClick = { markLiteral(false) }) {
                 Icon(Icons.Filled.Close, "Unknown", tint = MaterialTheme.colorScheme.error)
             }
-            IconButton(onClick = { onLiteralKnown() }) {
+            IconButton(onClick = { markLiteral(true) }) {
                 Icon(Icons.Filled.Check, "Known", tint = Color.Green)
             }
         }
@@ -58,7 +55,6 @@ fun TestCard(literal: Literal, onLiteralKnown: () -> Unit, onLiteralUnknown: () 
 fun Preview() {
     TestCard(
         Literal("value", "definition", 0, 1, 0),
-        {},
         {}
     )
 }

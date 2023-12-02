@@ -25,37 +25,31 @@ class TestViewModel(private val repo: LiteralRepository) : ViewModel() {
         }
     }
 
-    private fun fetchLiteral() {
+    private fun fetchNextLiteral() {
         val newList = _literals.value.drop(1)
         val item = newList.firstOrNull() ?: return
         _currentLiteral.value = item
         _literals.value = newList
     }
 
-    fun markLiteralKnown() {
+    fun markCurrentLiteralAndFetchNext(known: Boolean) {
         currentLiteral.value?.run literal@{
-            val updatedInterval = when (interval) {
-                in 1..Int.MAX_VALUE -> interval * 2
-                else -> 2
-            }
+            val updatedInterval =
+                if (known) {
+                    when (interval) {
+                        in 1..Int.MAX_VALUE -> interval * 2
+                        else -> 2
+                    }
+                } else {
+                    1
+                }
             interval = updatedInterval
             nextViewDate = calculateNextViewTime(updatedInterval)
             viewModelScope.launch(Dispatchers.IO) {
                 repo.update(this@literal)
             }
         }
-        fetchLiteral()
-    }
-
-    fun markLiteralUnknown() {
-        currentLiteral.value?.run literal@{
-            interval = 1
-            nextViewDate = calculateNextViewTime(1)
-            viewModelScope.launch(Dispatchers.IO) {
-                repo.update(this@literal)
-            }
-        }
-        fetchLiteral()
+        fetchNextLiteral()
     }
 
     private fun calculateNextViewTime(interval: Int): Long =
