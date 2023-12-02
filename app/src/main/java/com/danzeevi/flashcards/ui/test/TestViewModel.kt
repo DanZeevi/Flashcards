@@ -4,21 +4,21 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.danzeevi.flashcards.data.Literal
 import com.danzeevi.flashcards.data.LiteralRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.days
 
 class TestViewModel(private val repo: LiteralRepository) : ViewModel() {
-    private val _literals = MutableStateFlow<List<Literal?>>(emptyList())
+    private val _literals = MutableStateFlow<List<Literal>>(emptyList())
 
     private val _currentLiteral = MutableStateFlow<Literal?>(null)
     val currentLiteral = _currentLiteral.asStateFlow()
 
     init {
         viewModelScope.launch {
-            repo.getAll().collect {
+            repo.getLiteralsFilteredForToday().collect {
                 _literals.value = it
                 _currentLiteral.value = it.firstOrNull()
             }
@@ -33,23 +33,27 @@ class TestViewModel(private val repo: LiteralRepository) : ViewModel() {
     }
 
     fun markLiteralKnown() {
-        currentLiteral.value?.let { literal ->
-            val updatedInterval = when (literal.interval) {
-                in 1..Int.MAX_VALUE -> literal.interval * 2
+        currentLiteral.value?.run literal@{
+            val updatedInterval = when (interval) {
+                in 1..Int.MAX_VALUE -> interval * 2
                 else -> 2
             }
-            literal.interval = updatedInterval
-            literal.nextViewDate = calculateNextViewTime(updatedInterval)
-            repo::update
+            interval = updatedInterval
+            nextViewDate = calculateNextViewTime(updatedInterval)
+            viewModelScope.launch(Dispatchers.IO) {
+                repo.update(this@literal)
+            }
         }
         fetchLiteral()
     }
 
     fun markLiteralUnknown() {
-        currentLiteral.value?.let { literal ->
-            literal.interval = 1
-            literal.nextViewDate = calculateNextViewTime(1)
-            repo::update
+        currentLiteral.value?.run literal@{
+            interval = 1
+            nextViewDate = calculateNextViewTime(1)
+            viewModelScope.launch(Dispatchers.IO) {
+                repo.update(this@literal)
+            }
         }
         fetchLiteral()
     }

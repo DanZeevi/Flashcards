@@ -22,4 +22,7 @@ interface LiteralDAO {
 
     @Delete
     fun delete(literal: Literal)
+
+    @Query("SELECT * FROM Literal WHERE nextViewDate < :currentMillis")
+    fun getLiteralsBeforeNow(currentMillis: Long = System.currentTimeMillis()): Flow<List<Literal>>
 }
