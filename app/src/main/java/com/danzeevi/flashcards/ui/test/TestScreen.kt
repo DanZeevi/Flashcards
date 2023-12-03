@@ -12,8 +12,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,8 +29,18 @@ import org.koin.androidx.compose.getViewModel
 @Composable
 fun TestScreen(viewModel: TestViewModel = getViewModel()) {
     val literal by viewModel.currentLiteral.collectAsState()
-    literal?.let {
-        TestCard(it, viewModel::markCurrentLiteralAndFetchNext)
+    var shouldShow by rememberSaveable { mutableStateOf(true) }
+    fun handeCardMarked(known: Boolean) {
+        shouldShow = false
+        viewModel.markCurrentLiteralAndFetchNext(known)
+    }
+
+    LaunchedEffect(key1 = literal, block = {shouldShow = literal != null})
+
+    if (shouldShow) {
+        literal?.let {
+            TestCard(it, ::handeCardMarked)
+        }
     }
 }
 

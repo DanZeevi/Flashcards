@@ -9,6 +9,7 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,6 +24,10 @@ import com.danzeevi.flashcards.ui.flashcard.cardface.CardFace
 fun Flashcard(literal: Literal, deleteLiteral: ((Literal) -> Unit)? = null, startEdit: () -> Unit) {
     var isFlipped by remember { mutableStateOf(false) }
 
+    LaunchedEffect(key1 = literal, block = {
+        isFlipped = false
+    })
+
     val onDelete = deleteLiteral?.let {
         { it.invoke(literal) }
     }
@@ -34,7 +39,6 @@ fun Flashcard(literal: Literal, deleteLiteral: ((Literal) -> Unit)? = null, star
             animationSpec = TweenSpec(600, easing = EaseInOutQuad)
         )
 
-    val interactionSource = remember { MutableInteractionSource() }
     Box(
         modifier = Modifier
             .background(Color.Transparent)
