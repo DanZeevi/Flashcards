@@ -30,16 +30,17 @@ import org.koin.androidx.compose.getViewModel
 fun TestScreen(viewModel: TestViewModel = getViewModel()) {
     val literal by viewModel.currentLiteral.collectAsState()
     var shouldShow by rememberSaveable { mutableStateOf(true) }
-    fun handeCardMarked(known: Boolean) {
+
+    fun handleCardMarked(known: Boolean) {
         shouldShow = false
         viewModel.markCurrentLiteralAndFetchNext(known)
     }
 
-    LaunchedEffect(key1 = literal, block = {shouldShow = literal != null})
+    LaunchedEffect(key1 = literal, block = { shouldShow = literal != null })
 
     if (shouldShow) {
         literal?.let {
-            TestCard(it, ::handeCardMarked)
+            TestCard(it, ::handleCardMarked)
         }
     }
 }
@@ -52,8 +53,10 @@ fun TestCard(literal: Literal, markLiteral: (known: Boolean) -> Unit) {
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
         Flashcard(literal, deleteLiteral = null) {}
-        Row(Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly) {
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
             IconButton(onClick = { markLiteral(false) }) {
                 Icon(Icons.Filled.Close, "Unknown", tint = MaterialTheme.colorScheme.error)
             }
@@ -68,5 +71,6 @@ fun TestCard(literal: Literal, markLiteral: (known: Boolean) -> Unit) {
 @Composable
 fun Preview() {
     TestCard(
-        Literal("value", "definition", 0, 1, 0)) {}
+        Literal("value", "definition", 0, 1, 0)
+    ) {}
 }
