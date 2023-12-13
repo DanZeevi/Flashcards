@@ -1,5 +1,11 @@
 package com.danzeevi.flashcards.ui.test
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandIn
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,45 +28,75 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import com.danzeevi.flashcards.data.Literal
 import com.danzeevi.flashcards.ui.flashcard.Flashcard
+import kotlinx.coroutines.delay
 import org.koin.androidx.compose.getViewModel
+
+const val SLIDE_OUT_ANIM_DURATION = 500
 
 @Composable
 fun TestScreen(viewModel: TestViewModel = getViewModel()) {
     val literal by viewModel.currentLiteral.collectAsState()
-    var shouldShow by rememberSaveable { mutableStateOf(true) }
 
     fun handleCardMarked(known: Boolean) {
-        shouldShow = false
         viewModel.markCurrentLiteralAndFetchNext(known)
     }
 
-    LaunchedEffect(key1 = literal, block = { shouldShow = literal != null })
-
-    if (shouldShow) {
-        literal?.let {
-            TestCard(it, ::handleCardMarked)
+    literal?.let {
+        TestCard(it) { known ->
+            handleCardMarked(known)
         }
     }
 }
 
 @Composable
 fun TestCard(literal: Literal, markLiteral: (known: Boolean) -> Unit) {
+    var isKnown by rememberSaveable { mutableStateOf(false) }
+    var shouldShow by rememberSaveable { mutableStateOf(false) }
+
+    fun handleCardMarked(asKnown: Boolean) {
+        isKnown = asKnown
+        shouldShow = false
+    }
+
+    val slideOutAnimSpec =
+        tween<IntOffset>(durationMillis = SLIDE_OUT_ANIM_DURATION, easing = FastOutLinearInEasing)
+
+    fun onAnimationEnd() {
+        if (!shouldShow) markLiteral(isKnown)
+    }
+
+    LaunchedEffect(key1 = shouldShow, block = {
+        if (shouldShow) return@LaunchedEffect
+        delay(slideOutAnimSpec.durationMillis.toLong() + 100L) // Using the animation duration alone causes a slide-in animation
+        onAnimationEnd()
+    })
+    LaunchedEffect(key1 = literal, block = {
+        shouldShow = true
+    })
+
     Column(
         Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
-        Flashcard(literal, deleteLiteral = null) {}
+        AnimatedVisibility(
+            shouldShow,
+            enter = fadeIn() + expandIn(expandFrom = Alignment.Center),
+            exit = slideOutHorizontally(slideOutAnimSpec) { it * 2 * (if (isKnown) 1 else -1) }
+        ) {
+            Flashcard(literal, deleteLiteral = null) {}
+        }
         Row(
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            IconButton(onClick = { markLiteral(false) }) {
+            IconButton(onClick = { handleCardMarked(false) }) {
                 Icon(Icons.Filled.Close, "Unknown", tint = MaterialTheme.colorScheme.error)
             }
-            IconButton(onClick = { markLiteral(true) }) {
+            IconButton(onClick = { handleCardMarked(true) }) {
                 Icon(Icons.Filled.Check, "Known", tint = Color.Green)
             }
         }
