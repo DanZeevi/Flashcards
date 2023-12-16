@@ -1,12 +1,12 @@
 package com.danzeevi.flashcards.ui.test
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandIn
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -82,15 +82,24 @@ fun TestCard(literal: Literal, markLiteral: (known: Boolean) -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
-        AnimatedVisibility(
-            shouldShow,
-            enter = fadeIn() + expandIn(expandFrom = Alignment.Center),
-            exit = slideOutHorizontally(slideOutAnimSpec) { it * 2 * (if (isKnown) 1 else -1) }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(2f),
+            contentAlignment = Alignment.Center,
         ) {
-            Flashcard(literal, deleteLiteral = null) {}
+            androidx.compose.animation.AnimatedVisibility(
+                shouldShow,
+                enter = fadeIn() + expandIn(expandFrom = Alignment.Center),
+                exit = slideOutHorizontally(slideOutAnimSpec) { it * 2 * (if (isKnown) 1 else -1) }
+            ) {
+                Flashcard(literal, deleteLiteral = null) {}
+            }
         }
         Row(
-            Modifier.fillMaxWidth(),
+            Modifier
+                .fillMaxWidth()
+                .weight(1f),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             IconButton(onClick = { handleCardMarked(false) }) {
