@@ -16,12 +16,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import com.danzeevi.flashcards.data.Literal
 import com.danzeevi.flashcards.ui.flashcard.cardface.CardFace
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Flashcard(literal: Literal, deleteLiteral: ((Literal) -> Unit)? = null, startEdit: () -> Unit) {
+fun Flashcard(
+    literal: Literal,
+    deleteLiteral: ((Literal) -> Unit)? = null,
+    startEdit: () -> Unit = {}
+) {
     var isFlipped by remember { mutableStateOf(false) }
 
     LaunchedEffect(key1 = literal, block = {
@@ -32,12 +37,12 @@ fun Flashcard(literal: Literal, deleteLiteral: ((Literal) -> Unit)? = null, star
         { it.invoke(literal) }
     }
 
-    val rotation =
-        animateFloatAsState(
-            targetValue = if (isFlipped) 180f else 0f,
-            label = "flip",
-            animationSpec = TweenSpec(600, easing = EaseInOutQuad)
-        )
+    val rotation by
+    animateFloatAsState(
+        targetValue = if (isFlipped) 180f else 0f,
+        label = "flip",
+        animationSpec = TweenSpec(600, easing = EaseInOutQuad)
+    )
 
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -51,10 +56,16 @@ fun Flashcard(literal: Literal, deleteLiteral: ((Literal) -> Unit)? = null, star
                 indication = null
             )
     ) {
-        if (rotation.value < 90f) {
-            CardFace(literal.value, rotation.value, onDelete)
+        if (rotation < 90f) {
+            CardFace(literal.value, rotation, onDelete)
         } else {
-            CardFace(literal.definition, rotation.value, onDelete, false)
+            CardFace(literal.definition, rotation, onDelete, false)
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun Preview() {
+    Flashcard(literal = Literal("value", "definition"))
 }

@@ -93,7 +93,7 @@ fun TestCard(literal: Literal, markLiteral: (known: Boolean) -> Unit) {
                 enter = fadeIn() + expandIn(expandFrom = Alignment.Center),
                 exit = slideOutHorizontally(slideOutAnimSpec) { it * 2 * (if (isKnown) 1 else -1) }
             ) {
-                Flashcard(literal, deleteLiteral = null) {}
+                Flashcard(literal, deleteLiteral = null)
             }
         }
         Row(
