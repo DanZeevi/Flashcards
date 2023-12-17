@@ -39,12 +39,16 @@ fun Flashcard(literal: Literal, deleteLiteral: ((Literal) -> Unit)? = null, star
             animationSpec = TweenSpec(600, easing = EaseInOutQuad)
         )
 
+    val interactionSource = remember { MutableInteractionSource() }
+
     Box(
         modifier = Modifier
             .background(Color.Transparent)
             .combinedClickable(
                 onClick = { isFlipped = !isFlipped },
-                onLongClick = startEdit
+                onLongClick = startEdit,
+                interactionSource = interactionSource,
+                indication = null
             )
     ) {
         if (rotation.value < 90f) {
