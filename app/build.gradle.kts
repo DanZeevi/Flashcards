@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace = "com.danzeevi.flashcards"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.danzeevi.flashcards"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -54,11 +54,11 @@ dependencies {
     val lifeCycleVersion = "2.6.2"
     val roomVersion = "2.5.0"
 
-    implementation("androidx.core:core-ktx:1.9.0")
+    implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifeCycleVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifeCycleVersion")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifeCycleVersion")
-    implementation("androidx.activity:activity-compose:1.7.2")
+    implementation("androidx.activity:activity-compose:1.8.2")
     implementation("androidx.compose.runtime:runtime-livedata:1.5.4")
     implementation(platform("androidx.compose:compose-bom:2023.03.00"))
     implementation("androidx.compose.ui:ui")
@@ -66,7 +66,9 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
     // Room DB
+    //noinspection GradleDependency https://github.com/google/ksp/issues/1633
     implementation("androidx.room:room-ktx:$roomVersion")
+    //noinspection GradleDependency https://github.com/google/ksp/issues/1633
     ksp("androidx.room:room-compiler:$roomVersion")
     // Koin DI
     implementation("io.insert-koin:koin-androidx-compose:3.5.0")
