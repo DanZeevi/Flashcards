@@ -52,7 +52,7 @@ android {
 
 dependencies {
     val lifeCycleVersion = "2.6.2"
-    val roomVersion = "2.5.0"
+    val roomVersion = "2.6.1"
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifeCycleVersion")
@@ -66,9 +66,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
     // Room DB
-    //noinspection GradleDependency https://github.com/google/ksp/issues/1633
     implementation("androidx.room:room-ktx:$roomVersion")
-    //noinspection GradleDependency https://github.com/google/ksp/issues/1633
     ksp("androidx.room:room-compiler:$roomVersion")
     // Koin DI
     implementation("io.insert-koin:koin-androidx-compose:3.5.0")
