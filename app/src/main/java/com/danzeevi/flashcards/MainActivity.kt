@@ -27,7 +27,9 @@ import com.danzeevi.flashcards.ui.literal_list.LiteralList
 import com.danzeevi.flashcards.ui.literal_list.LiteralListScreen
 import com.danzeevi.flashcards.ui.test.TestScreen
 import com.danzeevi.flashcards.ui.theme.FlashcardsTheme
+import org.koin.androidx.compose.KoinAndroidContext
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.annotation.KoinExperimentalAPI
 
 class MainActivity : ComponentActivity() {
     private val viewModel: MainViewModel by viewModel()
@@ -57,25 +59,29 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @OptIn(KoinExperimentalAPI::class)
     @Composable
     fun MainContent(viewModel: MainViewModel) {
-        val screen by viewModel.currentScreen.observeAsState(List)
-        Column(
-            Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceBetween,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Row(
-                Modifier
-                    .fillMaxSize()
-                    .weight(1f), verticalAlignment = Alignment.Top) {
-                when (screen) {
-                    List -> LiteralListScreen()
-                    Test -> TestScreen()
+        KoinAndroidContext {
+            val screen by viewModel.currentScreen.observeAsState(List)
+            Column(
+                Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Row(
+                    Modifier
+                        .fillMaxSize()
+                        .weight(1f), verticalAlignment = Alignment.Top
+                ) {
+                    when (screen) {
+                        List -> LiteralListScreen()
+                        Test -> TestScreen()
+                    }
                 }
-            }
-            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.Bottom) {
-                BottomNavBar(screen, viewModel::setScreen)
+                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.Bottom) {
+                    BottomNavBar(screen, viewModel::setScreen)
+                }
             }
         }
     }
