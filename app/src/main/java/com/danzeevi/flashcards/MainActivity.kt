@@ -19,6 +19,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.danzeevi.flashcards.common.AppEvent
 import com.danzeevi.flashcards.ui.MainViewModel
 import com.danzeevi.flashcards.ui.Screen.List
 import com.danzeevi.flashcards.ui.Screen.Test
@@ -54,7 +55,7 @@ class MainActivity : ComponentActivity() {
         if (intent.action == Intent.ACTION_PROCESS_TEXT) {
             val text = intent.getStringExtra(Intent.EXTRA_PROCESS_TEXT)
             text?.let {
-//                viewModel.showDialogAddLiteral(it)
+                viewModel.postEvent(AppEvent.DeepLinkAddValue(it))
             }
         }
     }
