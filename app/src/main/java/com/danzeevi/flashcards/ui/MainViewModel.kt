@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.danzeevi.flashcards.common.AppEvent
 import com.danzeevi.flashcards.common.EventBus
+import com.danzeevi.flashcards.common.collectEvents
 import kotlinx.coroutines.launch
 
 enum class Screen {
@@ -17,19 +18,13 @@ class MainViewModel(private val eventBus: EventBus) : ViewModel() {
     val currentScreen: LiveData<Screen> = _currentScreen
 
     init {
-        collectEvents()
-    }
-
-    private fun collectEvents() {
-        viewModelScope.launch {
-            eventBus.events.collect { event ->
-                when (event) {
-                    is AppEvent.DeepLinkAddValue -> {
-                        _currentScreen.value = Screen.List
-                    }
-
-                    AppEvent.EmptyEvent -> {} // No-op
+        collectEvents(eventBus) { event ->
+            when (event) {
+                is AppEvent.DeepLinkAddValue -> {
+                    _currentScreen.value = Screen.List
                 }
+
+                AppEvent.EmptyEvent -> {} // No-op
             }
         }
     }

@@ -7,6 +7,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.danzeevi.flashcards.common.AppEvent
 import com.danzeevi.flashcards.common.EventBus
+import com.danzeevi.flashcards.common.collectEvents
 import com.danzeevi.flashcards.data.Literal
 import com.danzeevi.flashcards.data.LiteralRepository
 import kotlinx.coroutines.Dispatchers
@@ -20,7 +21,7 @@ data class ShowDialogWithValue(
 
 class LiteralListViewModel(
     private val literalRepo: LiteralRepository,
-    private val eventBus: EventBus
+    eventBus: EventBus
 ) : ViewModel() {
     private val _dialogState = MutableLiveData(ShowDialogWithValue(false))
     val dialogState: LiveData<ShowDialogWithValue> = _dialogState
@@ -28,19 +29,13 @@ class LiteralListViewModel(
     val literals: LiveData<List<Literal>> = literalRepo.getAll().asLiveData()
 
     init {
-        collectEvents()
-    }
+        collectEvents(eventBus) { event ->
+            when (event) {
+                is AppEvent.DeepLinkAddValue -> {
+                    showDialogAddLiteral(event.string)
+                }
 
-    private fun collectEvents() {
-        viewModelScope.launch {
-            eventBus.events.collect { event ->
-                when (event) {
-                    is AppEvent.DeepLinkAddValue -> {
-                        showDialogAddLiteral(event.string)
-                    }
-
-                    AppEvent.EmptyEvent -> {/* No-op */
-                    }
+                AppEvent.EmptyEvent -> {/* No-op */
                 }
             }
         }
