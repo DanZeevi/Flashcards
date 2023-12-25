@@ -1,4 +1,4 @@
-package com.danzeevi.flashcards
+package com.danzeevi.flashcards.ui.literal_list
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

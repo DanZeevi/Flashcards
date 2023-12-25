@@ -1,7 +1,7 @@
 package com.danzeevi.flashcards.di
 
 import androidx.room.Room
-import com.danzeevi.flashcards.LiteralListViewModel
+import com.danzeevi.flashcards.ui.literal_list.LiteralListViewModel
 import com.danzeevi.flashcards.common.EventBus
 import com.danzeevi.flashcards.data.LiteralDAO
 import com.danzeevi.flashcards.data.LiteralDB

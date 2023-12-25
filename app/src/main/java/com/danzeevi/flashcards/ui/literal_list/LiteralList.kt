@@ -32,8 +32,6 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.danzeevi.flashcards.LiteralListViewModel
-import com.danzeevi.flashcards.ShowDialogWithValue
 import com.danzeevi.flashcards.data.Literal
 import com.danzeevi.flashcards.ui.flashcard.Flashcard
 import org.koin.androidx.compose.getViewModel
