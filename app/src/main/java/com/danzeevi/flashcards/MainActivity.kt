@@ -51,12 +51,23 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleIntent(intent)
+    }
+
     private fun handleIntent(intent: Intent) {
         if (intent.action == Intent.ACTION_PROCESS_TEXT) {
+            if (!isTaskRoot) {
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+                finish()
+            }
             val text = intent.getStringExtra(Intent.EXTRA_PROCESS_TEXT)
             text?.let {
                 viewModel.postEvent(AppEvent.DeepLinkAddValue(it))
             }
+            setIntent(null)
         }
     }
 
