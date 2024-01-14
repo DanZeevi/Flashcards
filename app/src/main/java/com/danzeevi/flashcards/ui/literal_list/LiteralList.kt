@@ -20,10 +20,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.danzeevi.flashcards.data.Literal
 import com.danzeevi.flashcards.ui.flashcard.Flashcard
-import org.koin.androidx.compose.getViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun LiteralListScreen(viewModel: LiteralListViewModel = getViewModel()) {
+fun LiteralListScreen(viewModel: LiteralListViewModel = koinViewModel()) {
     val literals by viewModel.literals.observeAsState(listOf())
     val showDialogWithValue by viewModel.dialogState.observeAsState(ShowDialogWithValue(false))
 

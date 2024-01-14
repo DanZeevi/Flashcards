@@ -32,12 +32,12 @@ import androidx.compose.ui.unit.IntOffset
 import com.danzeevi.flashcards.data.Literal
 import com.danzeevi.flashcards.ui.flashcard.Flashcard
 import kotlinx.coroutines.delay
-import org.koin.androidx.compose.getViewModel
+import org.koin.androidx.compose.koinViewModel
 
 const val SLIDE_OUT_ANIM_DURATION = 500
 
 @Composable
-fun TestScreen(viewModel: TestViewModel = getViewModel()) {
+fun TestScreen(viewModel: TestViewModel = koinViewModel()) {
     val literal by viewModel.currentLiteral.collectAsState()
 
     fun handleCardMarked(known: Boolean) {
