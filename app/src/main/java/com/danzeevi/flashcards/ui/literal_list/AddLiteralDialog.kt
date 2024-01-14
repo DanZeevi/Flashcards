@@ -5,9 +5,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -19,7 +22,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
@@ -27,7 +29,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.danzeevi.flashcards.data.Literal
-
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -44,10 +45,12 @@ fun AddLiteralDialog(
     Dialog(onDismissRequest = onDismiss) {
         val focusManager = LocalFocusManager.current
         Column(
-            modifier = Modifier.background(Color.Transparent)
+            modifier = Modifier
+                .background(color = MaterialTheme.colorScheme.background)
+                .padding(8.dp)
         ) {
             OutlinedTextField(
-                modifier = Modifier.background(Color.Transparent),
+                modifier = Modifier.fillMaxWidth(),
                 value = value,
                 onValueChange = { value = it },
                 label = { Text("Value") },
@@ -60,7 +63,7 @@ fun AddLiteralDialog(
             Spacer(modifier = Modifier.height(12.dp))
 
             OutlinedTextField(
-                modifier = Modifier,
+                modifier = Modifier.fillMaxWidth(),
                 value = definition,
                 onValueChange = { definition = it },
                 label = { Text("Definition") },
@@ -82,10 +85,12 @@ fun AddLiteralDialog(
 }
 
 @Preview(
+    name = "Light mode empty",
     showSystemUi = true, showBackground = true,
     uiMode = Configuration.UI_MODE_NIGHT_NO
 )
 @Preview(
+    name = "Dark mode empty",
     showSystemUi = true, showBackground = true,
     uiMode = Configuration.UI_MODE_NIGHT_YES
 )
@@ -93,5 +98,22 @@ fun AddLiteralDialog(
 fun Preview() {
     Surface(modifier = Modifier.fillMaxSize()) {
         AddLiteralDialog(literal = Literal("value", ""), onDismiss = {}, onFinish = {})
+    }
+}
+@Preview(
+    name = "Dark mode multi-line",
+    showSystemUi = true, showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+fun PreviewMultiLine() {
+    Surface(modifier = Modifier.fillMaxSize()) {
+        AddLiteralDialog(literal =
+        Literal(
+            "value of a value of a value of a value of a value of a value of a value",
+            "definition of definition of a definition of a definition"),
+            onDismiss = {},
+            onFinish = {}
+        )
     }
 }
