@@ -5,18 +5,21 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandIn
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -27,8 +30,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight.Companion.Bold
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.danzeevi.flashcards.data.Literal
 import com.danzeevi.flashcards.ui.flashcard.Flashcard
 import kotlinx.coroutines.delay
@@ -43,11 +50,16 @@ fun TestScreen(viewModel: TestViewModel = koinViewModel()) {
     fun handleCardMarked(known: Boolean) {
         viewModel.markCurrentLiteralAndFetchNext(known)
     }
-
-    literal?.let {
-        TestCard(it) { known ->
-            handleCardMarked(known)
-        }
+    Column(
+        Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceEvenly
+    ) {
+        literal?.let {
+            TestCard(it) { known ->
+                handleCardMarked(known)
+            }
+        } ?: NotificationEmpty()
     }
 }
 
@@ -112,10 +124,44 @@ fun TestCard(literal: Literal, markLiteral: (known: Boolean) -> Unit) {
     }
 }
 
-@Preview
 @Composable
-fun Preview() {
+fun NotificationEmpty() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Text(
+            modifier = Modifier
+                .background(Color.LightGray)
+                .padding(16.dp),
+            textAlign = TextAlign.Center,
+            fontSize = 24.sp,
+            fontWeight = Bold,
+            text = "No literals to review"
+        )
+    }
+}
+
+@Preview(
+    name = "Test card",
+    showBackground = true,
+    showSystemUi = true,
+)
+@Composable
+fun PreviewTestCard() {
     TestCard(
         Literal("value", "definition", 0, 1, 0)
     ) {}
+}
+
+@Preview(
+    name = "Empty notification",
+    showBackground = true,
+    showSystemUi = true,
+)
+@Composable
+fun PreviewEmptyNotification() {
+    NotificationEmpty()
 }
