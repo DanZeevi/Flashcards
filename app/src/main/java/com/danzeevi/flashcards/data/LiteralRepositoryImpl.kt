@@ -1,8 +1,9 @@
 package com.danzeevi.flashcards.data
 
+import com.danzeevi.flashcards.common.TimeHandler
 import kotlinx.coroutines.flow.Flow
 
-class LiteralRepositoryImpl(private val literalDAO: LiteralDAO) : LiteralRepository {
+class LiteralRepositoryImpl(private val literalDAO: LiteralDAO, private val timeHandler: TimeHandler) : LiteralRepository {
     override fun getAll(): Flow<List<Literal>> = literalDAO.getAll()
 
     override fun insert(literal: Literal) {
@@ -17,5 +18,5 @@ class LiteralRepositoryImpl(private val literalDAO: LiteralDAO) : LiteralReposit
         literalDAO.delete(literal)
     }
 
-    override fun getLiteralsFilteredForToday() = literalDAO.getLiteralsBeforeNow()
+    override fun getLiteralsFilteredForToday() = literalDAO.getLiteralsBeforeNow(timeHandler.getCurrentTimeMs())
 }

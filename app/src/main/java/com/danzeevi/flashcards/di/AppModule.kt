@@ -3,6 +3,8 @@ package com.danzeevi.flashcards.di
 import androidx.room.Room
 import com.danzeevi.flashcards.ui.literal_list.LiteralListViewModel
 import com.danzeevi.flashcards.common.EventBus
+import com.danzeevi.flashcards.common.TimeHandler
+import com.danzeevi.flashcards.common.TimeHandlerDefault
 import com.danzeevi.flashcards.data.LiteralDAO
 import com.danzeevi.flashcards.data.LiteralDB
 import com.danzeevi.flashcards.data.LiteralRepository
@@ -26,11 +28,13 @@ val appModule = module {
         val literalDB = get<LiteralDB>()
         literalDB.literalDao()
     }
-    single<LiteralRepository> { LiteralRepositoryImpl(get()) }
+    single<LiteralRepository> { LiteralRepositoryImpl(get(), get()) }
     // Event Bus
     single { EventBus() }
+    // Time keeping
+    single<TimeHandler> { TimeHandlerDefault() }
     // ViewModels
     viewModel { MainViewModel(get()) }
     viewModel { LiteralListViewModel(get(), get()) }
-    viewModel { TestViewModel(get()) }
+    viewModel { TestViewModel(get(), get()) }
 }

@@ -1,10 +1,8 @@
 package com.danzeevi.flashcards.data
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
@@ -24,5 +22,5 @@ interface LiteralDAO {
     fun delete(literal: Literal)
 
     @Query("SELECT * FROM Literal WHERE nextViewDate < :currentMillis")
-    fun getLiteralsBeforeNow(currentMillis: Long = System.currentTimeMillis()): Flow<List<Literal>>
+    fun getLiteralsBeforeNow(currentMillis: Long): Flow<List<Literal>>
 }

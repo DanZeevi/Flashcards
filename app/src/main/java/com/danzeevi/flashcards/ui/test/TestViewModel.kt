@@ -2,6 +2,7 @@ package com.danzeevi.flashcards.ui.test
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.danzeevi.flashcards.common.TimeHandler
 import com.danzeevi.flashcards.data.Literal
 import com.danzeevi.flashcards.data.LiteralRepository
 import kotlinx.coroutines.Dispatchers
@@ -10,7 +11,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.days
 
-class TestViewModel(private val repo: LiteralRepository) : ViewModel() {
+class TestViewModel(
+    private val repo: LiteralRepository,
+    private val timeHandler: TimeHandler
+) : ViewModel() {
     private val _literals = MutableStateFlow<List<Literal>>(emptyList())
 
     private val _currentLiteral = MutableStateFlow<Literal?>(null)
@@ -53,5 +57,5 @@ class TestViewModel(private val repo: LiteralRepository) : ViewModel() {
     }
 
     private fun calculateNextViewTime(interval: Int): Long =
-        System.currentTimeMillis() + interval.days.inWholeMilliseconds
+        timeHandler.getCurrentTimeMs() + interval.days.inWholeMilliseconds
 }
