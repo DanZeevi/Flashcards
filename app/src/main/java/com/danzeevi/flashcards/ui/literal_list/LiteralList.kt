@@ -22,24 +22,42 @@ import com.danzeevi.flashcards.data.Literal
 import com.danzeevi.flashcards.ui.flashcard.Flashcard
 import org.koin.androidx.compose.koinViewModel
 
+interface LiteralListActions {
+    fun deleteLiteral(literal: Literal)
+    fun addLiteral(literal: Literal)
+    fun showDialogUpdateLiteral(literal: Literal)
+    fun showDialogAddLiteral(value: String = "")
+    fun updateLiteral(literal: Literal)
+    fun closeDialogAddLiteral()
+}
+
 @Composable
 fun LiteralListScreen(viewModel: LiteralListViewModel = koinViewModel()) {
     val literals by viewModel.literals.observeAsState(listOf())
     val showDialogWithValue by viewModel.dialogState.observeAsState(ShowDialogWithValue(false))
 
+    LiteralListContent(literals, viewModel, showDialogWithValue)
+}
+
+@Composable
+fun LiteralListContent(
+    literals: List<Literal>,
+    actions: LiteralListActions,
+    showDialogWithValue: ShowDialogWithValue
+) {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
         Column(Modifier.align(Alignment.TopCenter)) {
             LiteralList(
                 literals = literals,
-                deleteLiteral = viewModel::deleteLiteral,
-                startEdit = viewModel::showDialogUpdateLiteral
+                deleteLiteral = actions::deleteLiteral,
+                startEdit = actions::showDialogUpdateLiteral
             )
         }
         AddLiteralButton(
             Modifier.align(Alignment.BottomEnd),
-            onClick = viewModel::showDialogAddLiteral
+            onClick = actions::showDialogAddLiteral
         )
         with(showDialogWithValue) {
             if (shouldShow && literal != null) {
@@ -47,12 +65,12 @@ fun LiteralListScreen(viewModel: LiteralListViewModel = koinViewModel()) {
                     literal,
                     onFinish = {
                         if (isEdit) {
-                            viewModel.updateLiteral(it)
+                            actions.updateLiteral(it)
                         } else {
-                            viewModel.addLiteral(it)
+                            actions.addLiteral(it)
                         }
                     },
-                    onDismiss = viewModel::closeDialogAddLiteral
+                    onDismiss = actions::closeDialogAddLiteral
                 )
             }
         }
@@ -60,10 +78,10 @@ fun LiteralListScreen(viewModel: LiteralListViewModel = koinViewModel()) {
 }
 
 @Composable
-fun AddLiteralButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
+fun AddLiteralButton(modifier: Modifier = Modifier, onClick: (() -> Unit)?) {
     FloatingActionButton(
         modifier = modifier.padding(16.dp),
-        onClick = { onClick() }
+        onClick = { onClick?.invoke() }
     ) {
         Icon(Icons.Filled.Add, "Add literal button")
     }

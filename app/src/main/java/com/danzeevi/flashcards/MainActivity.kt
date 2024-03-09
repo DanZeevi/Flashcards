@@ -20,12 +20,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.danzeevi.flashcards.common.AppEvent
+import com.danzeevi.flashcards.data.Literal
 import com.danzeevi.flashcards.ui.MainViewModel
 import com.danzeevi.flashcards.ui.Screen.List
 import com.danzeevi.flashcards.ui.Screen.Test
 import com.danzeevi.flashcards.ui.bottom_navbar.BottomNavBar
-import com.danzeevi.flashcards.ui.literal_list.LiteralList
+import com.danzeevi.flashcards.ui.literal_list.LiteralListActions
+import com.danzeevi.flashcards.ui.literal_list.LiteralListContent
 import com.danzeevi.flashcards.ui.literal_list.LiteralListScreen
+import com.danzeevi.flashcards.ui.literal_list.ShowDialogWithValue
 import com.danzeevi.flashcards.ui.test.TestScreen
 import com.danzeevi.flashcards.ui.theme.FlashcardsTheme
 import org.koin.androidx.compose.KoinAndroidContext
@@ -105,7 +108,20 @@ class MainActivity : ComponentActivity() {
 fun PreviewList() {
     FlashcardsTheme {
         Surface {
-            LiteralList(vocabularySample, {}) {}
+            val emptyActions = object: LiteralListActions {
+                override fun deleteLiteral(literal: Literal) {}
+
+                override fun addLiteral(literal: Literal) {}
+
+                override fun showDialogUpdateLiteral(literal: Literal) {}
+
+                override fun showDialogAddLiteral(value: String) {}
+
+                override fun updateLiteral(literal: Literal) {}
+
+                override fun closeDialogAddLiteral() {}
+            }
+            LiteralListContent(vocabularySample, emptyActions, ShowDialogWithValue(false))
         }
     }
 }

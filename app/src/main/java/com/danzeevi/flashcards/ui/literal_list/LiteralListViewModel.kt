@@ -22,7 +22,7 @@ data class ShowDialogWithValue(
 class LiteralListViewModel(
     private val literalRepo: LiteralRepository,
     eventBus: EventBus
-) : ViewModel() {
+) : ViewModel(), LiteralListActions {
     private val _dialogState = MutableLiveData(ShowDialogWithValue(false))
     val dialogState: LiveData<ShowDialogWithValue> = _dialogState
 
@@ -41,31 +41,31 @@ class LiteralListViewModel(
         }
     }
 
-    fun showDialogAddLiteral(value: String = "") {
+    override fun showDialogAddLiteral(value: String) {
         _dialogState.value = ShowDialogWithValue(true, Literal(value, ""))
     }
 
-    fun showDialogUpdateLiteral(literal: Literal) {
+    override fun showDialogUpdateLiteral(literal: Literal) {
         _dialogState.value = ShowDialogWithValue(true, literal, true)
     }
 
-    fun closeDialogAddLiteral() {
+    override fun closeDialogAddLiteral() {
         _dialogState.value = ShowDialogWithValue(false)
     }
 
-    fun addLiteral(literal: Literal) {
+    override fun addLiteral(literal: Literal) {
         viewModelScope.launch(Dispatchers.IO) {
             literalRepo.insert(literal)
         }
     }
 
-    fun updateLiteral(literal: Literal) {
+    override fun updateLiteral(literal: Literal) {
         viewModelScope.launch(Dispatchers.IO) {
             literalRepo.update(literal)
         }
     }
 
-    fun deleteLiteral(literal: Literal) {
+    override fun deleteLiteral(literal: Literal) {
         viewModelScope.launch(Dispatchers.IO) {
             literalRepo.delete(literal)
         }
