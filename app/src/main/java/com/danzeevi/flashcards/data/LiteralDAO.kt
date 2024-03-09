@@ -12,8 +12,8 @@ interface LiteralDAO {
     @Insert
     fun insert(literal: Literal)
 
-    @Query("SELECT * FROM Literal")
-    fun getAll(): Flow<List<Literal>>
+    @Query("SELECT * FROM Literal WHERE LOWER(value) LIKE LOWER(:query) OR LOWER(definition) LIKE LOWER(:query)")
+    fun getFiltered(query: String): Flow<List<Literal>>
 
     @Update
     fun update(literal: Literal)

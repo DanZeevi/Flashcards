@@ -4,7 +4,7 @@ import com.danzeevi.flashcards.common.TimeHandler
 import kotlinx.coroutines.flow.Flow
 
 class LiteralRepositoryImpl(private val literalDAO: LiteralDAO, private val timeHandler: TimeHandler) : LiteralRepository {
-    override fun getAll(): Flow<List<Literal>> = literalDAO.getAll()
+    override fun getFiltered(query: String): Flow<List<Literal>> = literalDAO.getFiltered("%$query%")
 
     override fun insert(literal: Literal) {
         literalDAO.insert(literal)

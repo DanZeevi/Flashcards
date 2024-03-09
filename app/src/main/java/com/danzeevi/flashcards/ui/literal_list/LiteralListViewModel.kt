@@ -11,6 +11,11 @@ import com.danzeevi.flashcards.common.collectEvents
 import com.danzeevi.flashcards.data.Literal
 import com.danzeevi.flashcards.data.LiteralRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 
 data class ShowDialogWithValue(
@@ -19,6 +24,8 @@ data class ShowDialogWithValue(
     val isEdit: Boolean = false,
 )
 
+const val DEBOUNCE_QUERY_MS = 300L
+
 class LiteralListViewModel(
     private val literalRepo: LiteralRepository,
     eventBus: EventBus
@@ -26,7 +33,15 @@ class LiteralListViewModel(
     private val _dialogState = MutableLiveData(ShowDialogWithValue(false))
     val dialogState: LiveData<ShowDialogWithValue> = _dialogState
 
-    val literals: LiveData<List<Literal>> = literalRepo.getAll().asLiveData()
+    private val queryParameter = MutableStateFlow("")
+
+    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
+    val literals = queryParameter
+        .debounce(DEBOUNCE_QUERY_MS)
+        .flatMapLatest { query ->
+            literalRepo.getFiltered(query)
+        }
+        .asLiveData(viewModelScope.coroutineContext)
 
     init {
         collectEvents(eventBus) { event ->
@@ -69,5 +84,9 @@ class LiteralListViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             literalRepo.delete(literal)
         }
+    }
+
+    override fun filter(query: String) {
+        queryParameter.value = query
     }
 }

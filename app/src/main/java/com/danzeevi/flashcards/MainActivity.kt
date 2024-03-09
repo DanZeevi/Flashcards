@@ -120,6 +120,8 @@ fun PreviewList() {
                 override fun updateLiteral(literal: Literal) {}
 
                 override fun closeDialogAddLiteral() {}
+
+                override fun filter(query: String) {}
             }
             LiteralListContent(vocabularySample, emptyActions, ShowDialogWithValue(false))
         }
