@@ -4,28 +4,34 @@ import com.danzeevi.flashcards.data.Literal
 
 val vocabularySample = listOf(
     Literal(
+        "verägert",
         "angry",
-        "verägert"
+        "Er war verärgert über den verlorenen Schlüssel"
     ),
     Literal(
         "wessen + Gen",
-        "whose"
+        "whose",
+        "Wessen Buch ist das auf dem Tisch?"
     ),
     Literal(
         "retten rettete hat gerettet",
-        "to rescue"
+        "to rescue",
+        "Sie rettete die Katze vom Baum."
     ),
     Literal(
         "heuer",
-        "this year"
+        "this year",
+        "Sie rettete die Katze vom Baum."
     ),
     Literal(
         "das Ventil, -e",
-        "valve"
+        "valve",
+        "Er drehte das Ventil vorsichtig auf, um den Druck im Kessel zu regulieren."
     ),
     Literal(
         "je",
-        "per"
+        "per",
+        "Wir bezahlen zehn Euro je Stunde für die Nachhilfe."
     ),
     Literal(
         "jeweils",

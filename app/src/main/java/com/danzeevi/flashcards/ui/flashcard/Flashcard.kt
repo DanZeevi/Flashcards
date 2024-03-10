@@ -57,7 +57,7 @@ fun Flashcard(
             )
     ) {
         if (rotation < 90f) {
-            CardFace(literal.value, rotation, onDelete)
+            CardFace(literal.value, rotation, onDelete, true, literal.example)
         } else {
             CardFace(literal.definition, rotation, onDelete, false)
         }

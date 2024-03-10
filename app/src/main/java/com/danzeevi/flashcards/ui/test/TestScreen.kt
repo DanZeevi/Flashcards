@@ -152,7 +152,7 @@ fun NotificationEmpty() {
 @Composable
 fun PreviewTestCard() {
     TestCard(
-        Literal("value", "definition", 0, 1, 0)
+        Literal("value", "definition", nextViewDate = 0, interval = 1, id = 0)
     ) {}
 }
 

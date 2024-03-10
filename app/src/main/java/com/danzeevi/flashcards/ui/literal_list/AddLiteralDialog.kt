@@ -41,6 +41,7 @@ fun AddLiteralDialog(
 
     var value by rememberSaveable { mutableStateOf(literal.value) }
     var definition by rememberSaveable { mutableStateOf(literal.definition) }
+    var example by rememberSaveable { mutableStateOf(literal.example) }
 
     Dialog(onDismissRequest = onDismiss) {
         val focusManager = LocalFocusManager.current
@@ -59,7 +60,7 @@ fun AddLiteralDialog(
                     onNext = { focusManager.moveFocus(FocusDirection.Next) }
                 )
             )
-            
+
             Spacer(modifier = Modifier.height(12.dp))
 
             OutlinedTextField(
@@ -67,6 +68,19 @@ fun AddLiteralDialog(
                 value = definition,
                 onValueChange = { definition = it },
                 label = { Text("Definition") },
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                keyboardActions = KeyboardActions(
+                    onNext = { focusManager.moveFocus(FocusDirection.Next) }
+                )
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = example ?: "",
+                onValueChange = { example = it.ifBlank { null } },
+                label = { Text("Example sentence") },
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                 keyboardActions = KeyboardActions(
                     onDone = {
@@ -75,6 +89,7 @@ fun AddLiteralDialog(
                         onFinish(literal.also {
                             it.value = value
                             it.definition = definition
+                            it.example = example
                         })
                         onDismiss()
                     }

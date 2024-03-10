@@ -9,6 +9,7 @@ import com.danzeevi.flashcards.data.LiteralDAO
 import com.danzeevi.flashcards.data.LiteralDB
 import com.danzeevi.flashcards.data.LiteralRepository
 import com.danzeevi.flashcards.data.LiteralRepositoryImpl
+import com.danzeevi.flashcards.data.MIGRATION_1_2
 import com.danzeevi.flashcards.ui.MainViewModel
 import com.danzeevi.flashcards.ui.test.TestViewModel
 import org.koin.android.ext.koin.androidApplication
@@ -21,6 +22,7 @@ val appModule = module {
     // Literal DB
     single<LiteralDB> {
         Room.databaseBuilder(androidApplication(), LiteralDB::class.java, LITERAL_DB)
+            .addMigrations(MIGRATION_1_2)
             .fallbackToDestructiveMigration()
             .build()
     }
